@@ -1,0 +1,15 @@
+import FreeCAD, Draft
+import os
+
+doc = FreeCAD.newDocument()
+script_path = os.path.dirname(os.path.abspath( __file__ ))
+eight_hole_tubing_path = os.path.join(script_path, 'Tubing Library/8 hole tubing.fcstd')
+FreeCAD.open(eight_hole_tubing_path)
+label = '8 hole tubing %s'
+obj = App.ActiveDocument.ActiveObject
+obj.Label = label % 1
+num_tubing_clones = 12
+for i in range(2, num_tubing_clones + 1):
+    cloned_object = Draft.clone(obj)
+    cloned_object.Label = label % i
+
