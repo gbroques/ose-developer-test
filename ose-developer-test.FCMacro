@@ -9,7 +9,23 @@ label = '8 hole tubing %s'
 obj = App.ActiveDocument.ActiveObject
 obj.Label = label % 1
 num_tubing_clones = 12
+tubes = []
+tubes.append(obj)
 for i in range(2, num_tubing_clones + 1):
-    cloned_object = Draft.clone(obj)
-    cloned_object.Label = label % i
+    cloned_obj = Draft.clone(obj)
+    cloned_obj.Label = label % i
+    tubes.append(cloned_obj)
+
+
+tubes[0].Placement = App.Placement(App.Vector(-50.8, 101.6, 50.8), App.Rotation(App.Vector(0, 1, 0), 90))
+tubes[1].Placement = App.Placement(App.Vector(711.2, 0, 0), App.Rotation(App.Vector(0, 0, 1), 0))
+tubes[2].Placement = App.Placement(App.Vector(101.6, -50.8, 152.4), App.Rotation(App.Vector(1, 0, 0), -90))
+tubes[3].Placement = App.Placement(App.Vector(0, 711.2, 0), App.Rotation(App.Vector(0, 0, 1), 0))
+tubes[4].Placement = App.Placement(App.Vector(-50.8, 609.6,50.8), App.Rotation(App.Vector(0, 1, 0), 90))
+tubes[5].Placement = App.Placement(App.Vector(711.2, 711.2, 0), App.Rotation(App.Vector(0, 0, 1), 0))
+tubes[6].Placement = App.Placement(App.Vector(609.6, -50.8, 152.4), App.Rotation(App.Vector(-1, 0, 0), 90))
+tubes[7].Placement = App.Placement(App.Vector(101.6, -50.8, 660.4), App.Rotation(App.Vector(-1, 0, 0), 90))
+tubes[8].Placement = App.Placement(App.Vector(609.6, -50.8, 660.4), App.Rotation(App.Vector(-1, 0, 0), 90))
+tubes[9].Placement = App.Placement(App.Vector(-50.8, 101.6, 762), App.Rotation(App.Vector(0, 1, 0), 90))
+tubes[10].Placement = App.Placement(App.Vector(-50.8, 609.6, 762), App.Rotation(App.Vector(0, 1, 0), 90))
 
