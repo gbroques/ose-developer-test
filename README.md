@@ -10,4 +10,3 @@ Download Tubing Library by running the following shell script:
 
 ## Import Macro into FreeCAD
 Import `ose-developer-test.FCMacro` into FreeCAD.
-

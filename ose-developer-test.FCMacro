@@ -1,31 +1,79 @@
-import FreeCAD, Draft
+"""
+OSE Developer Test Macro
+
+  +---+
+ /   /|
++---+ |
+|   | | H
+|   | |
+|   | +
+|   |/ S
++---+
+  S
+
+Dimensions of 8 hole tubing:
+    Side: 101.60
+    Height: 812.80
+
+Width and length are equal making the 8 hole tubing a square prism.
+"""
 import os
 
-doc = FreeCAD.newDocument()
-script_path = os.path.dirname(os.path.abspath( __file__ ))
-eight_hole_tubing_path = os.path.join(script_path, 'Tubing Library/8 hole tubing.fcstd')
-FreeCAD.open(eight_hole_tubing_path)
-label = '8 hole tubing %s'
-obj = App.ActiveDocument.ActiveObject
-obj.Label = label % 1
-num_tubing_clones = 12
-tubes = []
-tubes.append(obj)
-for i in range(2, num_tubing_clones + 1):
-    cloned_obj = Draft.clone(obj)
-    cloned_obj.Label = label % i
-    tubes.append(cloned_obj)
+import Draft
+import FreeCAD
 
 
-tubes[0].Placement = App.Placement(App.Vector(-50.8, 101.6, 50.8), App.Rotation(App.Vector(0, 1, 0), 90))
-tubes[1].Placement = App.Placement(App.Vector(711.2, 0, 0), App.Rotation(App.Vector(0, 0, 1), 0))
-tubes[2].Placement = App.Placement(App.Vector(101.6, -50.8, 152.4), App.Rotation(App.Vector(1, 0, 0), -90))
-tubes[3].Placement = App.Placement(App.Vector(0, 711.2, 0), App.Rotation(App.Vector(0, 0, 1), 0))
-tubes[4].Placement = App.Placement(App.Vector(-50.8, 609.6,50.8), App.Rotation(App.Vector(0, 1, 0), 90))
-tubes[5].Placement = App.Placement(App.Vector(711.2, 711.2, 0), App.Rotation(App.Vector(0, 0, 1), 0))
-tubes[6].Placement = App.Placement(App.Vector(609.6, -50.8, 152.4), App.Rotation(App.Vector(-1, 0, 0), 90))
-tubes[7].Placement = App.Placement(App.Vector(101.6, -50.8, 660.4), App.Rotation(App.Vector(-1, 0, 0), 90))
-tubes[8].Placement = App.Placement(App.Vector(609.6, -50.8, 660.4), App.Rotation(App.Vector(-1, 0, 0), 90))
-tubes[9].Placement = App.Placement(App.Vector(-50.8, 101.6, 762), App.Rotation(App.Vector(0, 1, 0), 90))
-tubes[10].Placement = App.Placement(App.Vector(-50.8, 609.6, 762), App.Rotation(App.Vector(0, 1, 0), 90))
+def main():
+    FreeCAD.newDocument()
+    open_eight_hole_tubing()
+    initial_eight_hole_tubing = App.ActiveDocument.ActiveObject
+    tubes = clone_tubes_for_cube(initial_eight_hole_tubing)
+    arrange_tubes_into_cube(tubes)
 
+
+def open_eight_hole_tubing():
+    """
+    Opens 8 hole tubing.fcstd from tubing library.
+    """
+    script_path = os.path.dirname(os.path.abspath(__file__))
+    eight_hole_tubing_path = os.path.join(script_path, 'Tubing Library/8 hole tubing.fcstd')
+    FreeCAD.open(eight_hole_tubing_path)
+
+
+def clone_tubes_for_cube(initial_tube):
+    """
+    Clones initial tube 12 times for cube.
+    """
+    label = '8 hole tubing %s'
+    initial_tube.Label = label % 1
+    num_tubing_clones = 12
+    tubes = [initial_tube]
+    for i in range(2, num_tubing_clones + 1):
+        cloned_tube = Draft.clone(initial_tube)
+        cloned_tube.Label = label % i
+        tubes.append(cloned_tube)
+    return tubes
+
+
+def arrange_tubes_into_cube(tubes):
+    """
+    Arranges a list of tubes into a cube based on tube dimension.
+    """
+    side = 101.6
+    height = 812.80
+    half_side = 101.6 / 2
+    tubes[0].Placement = App.Placement(App.Vector(-half_side, side, half_side), App.Rotation(App.Vector(0, 1, 0), 90))
+    tubes[1].Placement = App.Placement(App.Vector((height - side), 0, 0), App.Rotation(App.Vector(0, 0, 1), 0))
+    tubes[2].Placement = App.Placement(App.Vector(side, -half_side, (side + half_side)), App.Rotation(App.Vector(1, 0, 0), -90))
+    tubes[3].Placement = App.Placement(App.Vector(0, (height - side), 0), App.Rotation(App.Vector(0, 0, 1), 0))
+    tubes[4].Placement = App.Placement(App.Vector(-half_side, (height - side * 2), half_side), App.Rotation(App.Vector(0, 1, 0), 90))
+    tubes[5].Placement = App.Placement(App.Vector((height - side), (height - side), 0), App.Rotation(App.Vector(0, 0, 1), 0))
+    tubes[6].Placement = App.Placement(App.Vector((height - side * 2), -half_side, (side + half_side)), App.Rotation(App.Vector(-1, 0, 0), 90))
+    tubes[7].Placement = App.Placement(App.Vector(side, -half_side, (height - side - half_side)), App.Rotation(App.Vector(-1, 0, 0), 90))
+    tubes[8].Placement = App.Placement(App.Vector((height - side * 2), -half_side, (height - side - half_side)), App.Rotation(App.Vector(-1, 0, 0), 90))
+    tubes[9].Placement = App.Placement(App.Vector(-half_side, side, height - half_side), App.Rotation(App.Vector(0, 1, 0), 90))
+    tubes[10].Placement = App.Placement(App.Vector(-half_side, (height - side * 2), height - half_side), App.Rotation(App.Vector(0, 1, 0), 90))
+
+
+if __name__ == "__main__":
+    main()
