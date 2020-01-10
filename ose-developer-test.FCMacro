@@ -65,6 +65,7 @@ def arrange_tubes_into_cube(tubes):
     side = 101.6
     height = 812.80
     half_side = 101.6 / 2
+    # TODO: Break function up into sub-functions: arrange_base, arrange_walls, and arrange_top
     tubes[0].Placement = App.Placement(App.Vector(-half_side, side, half_side), App.Rotation(App.Vector(0, 1, 0), 90))
     tubes[1].Placement = App.Placement(App.Vector((height - side), 0, 0), App.Rotation(App.Vector(0, 0, 1), 0))
     tubes[2].Placement = App.Placement(App.Vector(side, -half_side, (side + half_side)), App.Rotation(App.Vector(1, 0, 0), -90))
