@@ -21,6 +21,8 @@ import os
 
 import Draft
 import FreeCAD
+import FreeCADGui
+import ScrewMaker
 
 
 def main():
@@ -29,6 +31,7 @@ def main():
     initial_eight_hole_tubing = App.ActiveDocument.ActiveObject
     tubes = clone_tubes_for_cube(initial_eight_hole_tubing)
     arrange_tubes_into_cube(tubes)
+    create_screw()
 
 
 def open_eight_hole_tubing():
@@ -73,6 +76,13 @@ def arrange_tubes_into_cube(tubes):
     tubes[8].Placement = App.Placement(App.Vector((height - side * 2), -half_side, (height - side - half_side)), App.Rotation(App.Vector(-1, 0, 0), 90))
     tubes[9].Placement = App.Placement(App.Vector(-half_side, side, height - half_side), App.Rotation(App.Vector(0, 1, 0), 90))
     tubes[10].Placement = App.Placement(App.Vector(-half_side, (height - side * 2), height - half_side), App.Rotation(App.Vector(0, 1, 0), 90))
+
+
+def create_screw():
+    first_tube = App.ActiveDocument.getObjectsByLabel('8 hole tubing 1')[0]
+    FreeCADGui.Selection.addSelection(first_tube, 'Edge29')
+    sm = ScrewMaker.Instance()
+    return sm.createFastener('ISO4014', 'M24', '120', 'simple')
 
 
 if __name__ == "__main__":
