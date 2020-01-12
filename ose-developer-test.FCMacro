@@ -32,10 +32,15 @@ from FreeCAD import Placement, Rotation, Vector
 
 
 def main():
-    document = open_tubing('8 hole tubing.fcstd')
+    tubing_filename = '8 hole tubing.fcstd'
+    document = open_tubing(tubing_filename)
+
     initial_eight_hole_tubing = document.Clone
     dimensions = get_dimensions(document, initial_eight_hole_tubing)
-    tubes = clone_tubes_for_cube(initial_eight_hole_tubing)
+
+    base_tube_label = tubing_filename.split('.')[0]
+    tubes = clone_tubes_for_cube(initial_eight_hole_tubing, base_tube_label)
+
     arrange_tubes_into_cube(tubes, dimensions)
     create_screw_and_nut_through_corner_of_cube()
     create_pocketed_initials(document)
@@ -68,11 +73,11 @@ def get_dimensions(document, tubing):
     return side, height
 
 
-def clone_tubes_for_cube(initial_tube):
+def clone_tubes_for_cube(initial_tube, base_label):
     """
     Clones initial tube 12 times for cube.
     """
-    label = '8 hole tubing %s'
+    label = base_label + ' %s'
     initial_tube.Label = label % 1
     num_tubing_clones = 12
     tubes = [initial_tube]
