@@ -148,20 +148,18 @@ def create_pocketed_initials(document, tube, face):
 
 def create_body(document, guiDocument, tube, face):
     body_name = 'Body'
-    document.addObject('PartDesign::Body', body_name)
-    body = document.getObject(body_name)
-    document.Body.BaseFeature = tube
+    body = document.addObject('PartDesign::Body', body_name)
+    body.BaseFeature = tube
     guiDocument.ActiveView.setActiveObject('pdbody', body)
     FreeCADGui.Selection.clearSelection()
-    FreeCADGui.Selection.addSelection(document.BaseFeature, face)
+    FreeCADGui.Selection.addSelection(body.BaseFeature, face)
     return body
 
 
 def create_sketch(document, guiDocument, body, tube, face):
     tube.ViewObject.Visibility = False
     sketch_name = 'Sketch'
-    body.newObject('Sketcher::SketchObject', sketch_name)
-    sketch = document.getObject(sketch_name)
+    sketch = body.newObject('Sketcher::SketchObject', sketch_name)
     sketch.Support = (document.BaseFeature, [face])
     sketch.MapMode = 'FlatFace'
     guiDocument.setEdit(sketch_name)
@@ -271,9 +269,8 @@ def create_r_initial_in_sketch(sketch):
 
 def create_pocket(document, guiDocument, body, sketch):
     pocket_name = 'Pocket'
-    body.newObject('PartDesign::Pocket', pocket_name)
+    pocket = body.newObject('PartDesign::Pocket', pocket_name)
 
-    pocket = document.getObject(pocket_name)
     pocket.Profile = sketch
     pocket.Length = 5.0
     pocket.Length2 = 100.0
