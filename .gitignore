@@ -1,3 +1,4 @@
 Tubing Library/
 FreeCAD_Tubing_Library.tar.gz
-
+.vscode/*
+!.vscode/settings.json
