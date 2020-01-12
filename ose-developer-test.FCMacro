@@ -43,7 +43,9 @@ def main():
 
     arrange_tubes_into_cube(tubes, dimensions)
     create_bolt_and_nut_through_corner_of_cube()
-    create_pocketed_initials(document)
+
+    last_tube = tubes[-1]
+    create_pocketed_initials(document, last_tube, 'Face4')
 
 
 def open_tubing(filename):
@@ -132,43 +134,35 @@ def create_bolt_and_nut_through_corner_of_cube():
         Vector(0, -65.45, 762), Rotation(Vector(-1, 0, 0), 90))
 
 
-def create_pocketed_initials(document):
+def create_pocketed_initials(document, tube, face):
     guiDocument = FreeCADGui.ActiveDocument
 
-    body = create_body(document, guiDocument)
+    body = create_body(document, guiDocument, tube, face)
 
-    sketch = create_sketch(document, guiDocument, body)
+    sketch = create_sketch(document, guiDocument, body, tube, face)
 
     create_initials_in_sketch(sketch)
 
-    create_pocket(document, guiDocument, body)
+    create_pocket(document, guiDocument, body, sketch)
 
 
-def create_body(document, guiDocument):
-    """
-    TODO: Both create_body and create_sketch use Clone011 and Face4
-          These should be parameterized or extracted somehow
-    """
+def create_body(document, guiDocument, tube, face):
     body_name = 'Body'
     document.addObject('PartDesign::Body', body_name)
     body = document.getObject(body_name)
-    document.Body.BaseFeature = document.Clone011
+    document.Body.BaseFeature = tube
     guiDocument.ActiveView.setActiveObject('pdbody', body)
     FreeCADGui.Selection.clearSelection()
-    FreeCADGui.Selection.addSelection(document.BaseFeature, 'Face4')
+    FreeCADGui.Selection.addSelection(document.BaseFeature, face)
     return body
 
 
-def create_sketch(document, guiDocument, body):
-    """
-    TODO: Both create_body and create_sketch use Clone011 and Face4
-          These should be parameterized or extracted somehow
-    """
-    guiDocument.Clone011.Visibility = False
+def create_sketch(document, guiDocument, body, tube, face):
+    tube.ViewObject.Visibility = False
     sketch_name = 'Sketch'
     body.newObject('Sketcher::SketchObject', sketch_name)
     sketch = document.getObject(sketch_name)
-    sketch.Support = (document.BaseFeature, ['Face4'])
+    sketch.Support = (document.BaseFeature, [face])
     sketch.MapMode = 'FlatFace'
     guiDocument.setEdit(sketch_name)
     return sketch
@@ -275,13 +269,12 @@ def create_r_initial_in_sketch(sketch):
     sketch.addConstraint(Sketcher.Constraint('Horizontal', 18))
 
 
-def create_pocket(document, guiDocument, body):
-    # TODO: Pass in sketch
+def create_pocket(document, guiDocument, body, sketch):
     pocket_name = 'Pocket'
     body.newObject('PartDesign::Pocket', pocket_name)
 
     pocket = document.getObject(pocket_name)
-    pocket.Profile = document.Sketch
+    pocket.Profile = sketch
     pocket.Length = 5.0
     pocket.Length2 = 100.0
     pocket.Type = 0
@@ -290,7 +283,7 @@ def create_pocket(document, guiDocument, body):
     pocket.Midplane = 0
     pocket.Offset = 0.0
 
-    guiDocument.hide('Sketch')
+    guiDocument.hide(sketch.Name)
 
     pocket_view = pocket.ViewObject
     body_view = body.ViewObject
@@ -303,7 +296,7 @@ def create_pocket(document, guiDocument, body):
     guiDocument.setEdit(pocket_name, 0)
     FreeCADGui.Selection.clearSelection()
 
-    guiDocument.hide('Sketch')
+    guiDocument.hide(sketch.Name)
     guiDocument.hide('BaseFeature')
     guiDocument.resetEdit()
 
