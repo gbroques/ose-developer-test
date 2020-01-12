@@ -102,7 +102,7 @@ def arrange_tubes_into_cube(tubes, dimensions):
     tubes[4].Placement = Placement(Vector(-half_side, (height - side * 2), half_side), Rotation(Vector(0, 1, 0), 90))
 
     # Top layer of base
-    tubes[2].Placement = Placement(Vector(side, -half_side, (side + half_side)), Rotation(Vector(1, 0, 0), -90))
+    tubes[2].Placement = Placement(Vector(side, -half_side, (side + half_side)), Rotation(Vector(-1, 0, 0), 90))
     tubes[6].Placement = Placement(Vector((height - side * 2), -half_side, (side + half_side)), Rotation(Vector(-1, 0, 0), 90))
 
     # Move 3 clones for pillars
