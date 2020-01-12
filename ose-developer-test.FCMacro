@@ -31,7 +31,7 @@ def main():
     initial_eight_hole_tubing = App.ActiveDocument.ActiveObject
     tubes = clone_tubes_for_cube(initial_eight_hole_tubing)
     arrange_tubes_into_cube(tubes)
-    create_screw()
+    create_screw_and_nut_through_corner_of_cube()
 
 
 def open_eight_hole_tubing():
@@ -79,11 +79,17 @@ def arrange_tubes_into_cube(tubes):
     tubes[10].Placement = App.Placement(App.Vector(-half_side, (height - side * 2), height - half_side), App.Rotation(App.Vector(0, 1, 0), 90))
 
 
-def create_screw():
+def create_screw_and_nut_through_corner_of_cube():
     first_tube = App.ActiveDocument.getObjectsByLabel('8 hole tubing 1')[0]
     FreeCADGui.Selection.addSelection(first_tube, 'Edge29')
     sm = ScrewMaker.Instance()
-    return sm.createFastener('ISO4014', 'M24', '120', 'simple')
+    screw = sm.createFastener('ISO4014', 'M30', '220', 'simple')
+    # Place screw through holes of 8 hole tubing 10 & 12 in corner of cube
+    screw.Placement = App.Placement(App.Vector(0, 152.4, 762), App.Rotation(App.Vector(-1, 0, 0), 90))
+
+    nut = sm.createFastener('ISO4032', '(M33)', 0, 'simple')
+    # Place nut on end of screw
+    nut.Placement = App.Placement(App.Vector(0, -65.45, 762), App.Rotation(App.Vector(-1, 0, 0), 90))
 
 
 if __name__ == "__main__":
