@@ -25,10 +25,10 @@ import os
 import Draft
 import FreeCAD
 import FreeCADGui
-import Part
 import ScrewMaker
-import Sketcher
 from FreeCAD import Placement, Rotation, Vector
+from Part import ArcOfCircle, Circle, LineSegment
+from Sketcher import Constraint
 
 
 def main():
@@ -181,98 +181,98 @@ def create_g_initial_in_sketch(sketch):
     bottom_midline = Vector(center_x, bottom_midline_y, 0)
 
     # Outer arc of G
-    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(center, Vector(0, 0, 1), 20.7), 0.75, 6), False)
-    sketch.addConstraint(Sketcher.Constraint('PointOnObject', 0, 3, -1))
-    sketch.addConstraint(Sketcher.Constraint('PointOnObject', 0, 2, -1))
+    sketch.addGeometry(ArcOfCircle(Circle(center, Vector(0, 0, 1), 20.7), 0.75, 6), False)
+    sketch.addConstraint(Constraint('PointOnObject', 0, 3, -1))
+    sketch.addConstraint(Constraint('PointOnObject', 0, 2, -1))
 
     # Horizontal mid-line of G
-    sketch.addGeometry(Part.LineSegment(Vector(-3.9, 0, 0), center), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 1, 1, 0, 2))
+    sketch.addGeometry(LineSegment(Vector(-3.9, 0, 0), center), False)
+    sketch.addConstraint(Constraint('Coincident', 1, 1, 0, 2))
 
     # Inner arc of G
-    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(center, Vector(0, 0, 1), 15.5), 0.75, 6), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 2, 3, 1, 2))
+    sketch.addGeometry(ArcOfCircle(Circle(center, Vector(0, 0, 1), 15.5), 0.75, 6), False)
+    sketch.addConstraint(Constraint('Coincident', 2, 3, 1, 2))
 
     # Lower horizontal mid-line of G
-    sketch.addGeometry(Part.LineSegment(Vector(-9.5, bottom_midline_y, 0), bottom_midline), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 3, 1, 2, 2))
-    sketch.addConstraint(Sketcher.Constraint('Horizontal', 3))
+    sketch.addGeometry(LineSegment(Vector(-9.5, bottom_midline_y, 0), bottom_midline), False)
+    sketch.addConstraint(Constraint('Coincident', 3, 1, 2, 2))
+    sketch.addConstraint(Constraint('Horizontal', 3))
 
     # Connecting line between two horizontal mid-lines
-    sketch.addGeometry(Part.LineSegment(center, bottom_midline), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 4, 1, 0, 3))
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 4, 2, 3, 2))
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 0, 3, 1, 2))
-    sketch.addConstraint(Sketcher.Constraint('Vertical', 4))
+    sketch.addGeometry(LineSegment(center, bottom_midline), False)
+    sketch.addConstraint(Constraint('Coincident', 4, 1, 0, 3))
+    sketch.addConstraint(Constraint('Coincident', 4, 2, 3, 2))
+    sketch.addConstraint(Constraint('Coincident', 0, 3, 1, 2))
+    sketch.addConstraint(Constraint('Vertical', 4))
 
     # Connecting line between outer and inner arcs
-    sketch.addGeometry(Part.LineSegment(Vector(-9.5, 13.8, 0), Vector(-13.8, 11.2, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 5, 1, 0, 1))
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 5, 2, 2, 1))
+    sketch.addGeometry(LineSegment(Vector(-9.5, 13.8, 0), Vector(-13.8, 11.2, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 5, 1, 0, 1))
+    sketch.addConstraint(Constraint('Coincident', 5, 2, 2, 1))
 
 
 def create_r_initial_in_sketch(sketch):
     # Left vertical line of R
-    sketch.addGeometry(Part.LineSegment(Vector(7.4, -20.4, 0), Vector(7.7, 19.6, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Vertical', 6))
+    sketch.addGeometry(LineSegment(Vector(7.4, -20.4, 0), Vector(7.7, 19.6, 0)), False)
+    sketch.addConstraint(Constraint('Vertical', 6))
 
     # Top horizontal line of R
-    sketch.addGeometry(Part.LineSegment(Vector(7.4, 19.6, 0), Vector(29.3, 19.5, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 6, 2, 7, 1))
-    sketch.addConstraint(Sketcher.Constraint('Horizontal', 7))
+    sketch.addGeometry(LineSegment(Vector(7.4, 19.6, 0), Vector(29.3, 19.5, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 6, 2, 7, 1))
+    sketch.addConstraint(Constraint('Horizontal', 7))
 
     # Top right arc R
-    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(Vector(26.2, 9.4, 0), Vector(0, 0, 1), 10.2), -1.1, 1.3), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 8, 2, 7, 2))
+    sketch.addGeometry(ArcOfCircle(Circle(Vector(26.2, 9.4, 0), Vector(0, 0, 1), 10.2), -1.1, 1.3), False)
+    sketch.addConstraint(Constraint('Coincident', 8, 2, 7, 2))
 
     # Midline
-    sketch.addGeometry(Part.LineSegment(Vector(30.7, -0.3, 0), Vector(16.6, -0.6, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 9, 1, 8, 1))
-    sketch.addConstraint(Sketcher.Constraint('PointOnObject', 9, 2, -1))
-    sketch.addConstraint(Sketcher.Constraint('Horizontal', 9))
+    sketch.addGeometry(LineSegment(Vector(30.7, -0.3, 0), Vector(16.6, -0.6, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 9, 1, 8, 1))
+    sketch.addConstraint(Constraint('PointOnObject', 9, 2, -1))
+    sketch.addConstraint(Constraint('Horizontal', 9))
 
     # Outer slanted line of right leg connecting to midline
-    sketch.addGeometry(Part.LineSegment(Vector(16.6, 0, 0), Vector(32.2, -20.7, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 10, 1, 9, 2))
+    sketch.addGeometry(LineSegment(Vector(16.6, 0, 0), Vector(32.2, -20.7, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 10, 1, 9, 2))
 
     # Bottom line of right leg
-    sketch.addGeometry(Part.LineSegment(Vector(32.2, -20.7, 0), Vector(24, -20.7, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 11, 1, 10, 2))
-    sketch.addConstraint(Sketcher.Constraint('Horizontal', 11))
+    sketch.addGeometry(LineSegment(Vector(32.2, -20.7, 0), Vector(24, -20.7, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 11, 1, 10, 2))
+    sketch.addConstraint(Constraint('Horizontal', 11))
 
     # Inner slanted line of right leg
-    sketch.addGeometry(Part.LineSegment(Vector(24, -20.7, 0), Vector(14.8, -6.8, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 12, 1, 11, 2))
+    sketch.addGeometry(LineSegment(Vector(24, -20.7, 0), Vector(14.8, -6.8, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 12, 1, 11, 2))
 
     # Right side of left leg
-    sketch.addGeometry(Part.LineSegment(Vector(14.8, -6.8, 0), Vector(14.9, -20.4, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 13, 1, 12, 2))
-    sketch.addConstraint(Sketcher.Constraint('Vertical', 13))
+    sketch.addGeometry(LineSegment(Vector(14.8, -6.8, 0), Vector(14.9, -20.4, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 13, 1, 12, 2))
+    sketch.addConstraint(Constraint('Vertical', 13))
 
     # Bottom line of left leg connecting to left vertical line of R
-    sketch.addGeometry(Part.LineSegment(Vector(14.8, -20.4, 0), Vector(7.4, -20.4, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 14, 1, 13, 2))
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 14, 2, 6, 1))
-    sketch.addConstraint(Sketcher.Constraint('Horizontal', 14))
+    sketch.addGeometry(LineSegment(Vector(14.8, -20.4, 0), Vector(7.4, -20.4, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 14, 1, 13, 2))
+    sketch.addConstraint(Constraint('Coincident', 14, 2, 6, 1))
+    sketch.addConstraint(Constraint('Horizontal', 14))
 
     # Left vertical line of inner top hole
-    sketch.addGeometry(Part.LineSegment(Vector(17, 13, 0), Vector(17.3, 7, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Vertical', 15))
+    sketch.addGeometry(LineSegment(Vector(17, 13, 0), Vector(17.3, 7, 0)), False)
+    sketch.addConstraint(Constraint('Vertical', 15))
 
     # Top horizontal line of inner top hole
-    sketch.addGeometry(Part.LineSegment(Vector(17, 13, 0), Vector(25.3, 13, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 16, 1, 15, 1))
-    sketch.addConstraint(Sketcher.Constraint('Horizontal', 16))
+    sketch.addGeometry(LineSegment(Vector(17, 13, 0), Vector(25.3, 13, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 16, 1, 15, 1))
+    sketch.addConstraint(Constraint('Horizontal', 16))
 
     # Right arc of inner top hole
-    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(Vector(24.5, 9.6, 0), Vector(0, 0, 1), 3.5), -1, 1.3), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 17, 2, 16, 2))
+    sketch.addGeometry(ArcOfCircle(Circle(Vector(24.5, 9.6, 0), Vector(0, 0, 1), 3.5), -1, 1.3), False)
+    sketch.addConstraint(Constraint('Coincident', 17, 2, 16, 2))
 
     # Bottom horizontal line of inner top hole connecting right arc and left vertical line
-    sketch.addGeometry(Part.LineSegment(Vector(26.3, 6.6, 0), Vector(17.3, 6.5, 0)), False)
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 18, 1, 17, 1))
-    sketch.addConstraint(Sketcher.Constraint('Coincident', 18, 2, 15, 2))
-    sketch.addConstraint(Sketcher.Constraint('Horizontal', 18))
+    sketch.addGeometry(LineSegment(Vector(26.3, 6.6, 0), Vector(17.3, 6.5, 0)), False)
+    sketch.addConstraint(Constraint('Coincident', 18, 1, 17, 1))
+    sketch.addConstraint(Constraint('Coincident', 18, 2, 15, 2))
+    sketch.addConstraint(Constraint('Horizontal', 18))
 
 
 def create_pocket(document, guiDocument, body, sketch):
