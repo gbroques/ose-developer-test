@@ -122,6 +122,8 @@ def arrange_tubes_into_cube(tubes, dimensions):
 
 def create_bolt_and_nut_through_corner_of_cube():
     # TODO: Programmatically determine placement of bolt and nut instead of hard-coding
+    #       Ideally the fasteners workbench does this for us.
+    #       See https://github.com/shaise/FreeCAD_FastenersWB/issues/53
     sm = ScrewMaker.Instance()
     bolt = sm.createFastener('ISO4014', 'M30', '220', 'simple')
     # Place bolt through holes of 8 hole tubing 10 & 12 in corner of cube
