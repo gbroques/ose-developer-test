@@ -5,6 +5,7 @@ Programmatic solution to the [OSE Developer Test](https://wiki.opensourceecology
 * [Pre-Requisites](#pre-requisites)
 * [Usage](#usage)
 * [Dependencies](#dependencies)
+* [Future Development](#future-development)
 
 ## Requirements
 * Import 8 hole tubing from OSE Part Library and build a cube
@@ -44,3 +45,9 @@ Locale: English/UnitedStates (en_US)
 
 ### Fasteners Workbench
 This macro depends on the [Fasteners Workbench](https://github.com/shaise/FreeCAD_FastenersWB) and was tested with commit [ab74422](https://github.com/shaise/FreeCAD_FastenersWB/commit/ab74422090ae7faf17f009d9b736a31de98875d3).
+
+## Future Development
+Future development may include:
+* Allowing users to select which tubing to create the cube with through the FreeCAD GUI
+* Parameterize initials and allow a user to enter their initials in the FreeCAD GUI
+    * This would likely involve using FreeCAD's Text feature rather than using the Sketcher workbench to manually layout geometries and constraints as suggested by OSE
