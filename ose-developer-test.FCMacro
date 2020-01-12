@@ -137,6 +137,9 @@ def create_bolt_and_nut_through_corner_of_cube():
 
 
 def create_pocketed_initials(document, tube, face):
+    """
+    Create pocketed initials on a particular face of a given tube.
+    """
     guiDocument = FreeCADGui.ActiveDocument
 
     body = create_body(document, guiDocument, tube, face)
@@ -169,11 +172,11 @@ def create_sketch(guiDocument, body, face):
 
 
 def create_initials_in_sketch(sketch):
-    create_g_initial_in_sketch(sketch)
-    create_r_initial_in_sketch(sketch)
+    create_capital_g_in_left_side_of_sketch(sketch)
+    create_capital_r_in_right_side_of_sketch(sketch)
 
 
-def create_g_initial_in_sketch(sketch):
+def create_capital_g_in_left_side_of_sketch(sketch):
     center_x = -24.5
     center = Vector(center_x, 0, 0)
 
@@ -211,7 +214,7 @@ def create_g_initial_in_sketch(sketch):
     sketch.addConstraint(Constraint('Coincident', 5, 2, 2, 1))
 
 
-def create_r_initial_in_sketch(sketch):
+def create_capital_r_in_right_side_of_sketch(sketch):
     # Left vertical line of R
     sketch.addGeometry(LineSegment(Vector(7.4, -20.4, 0), Vector(7.7, 19.6, 0)), False)
     sketch.addConstraint(Constraint('Vertical', 6))
