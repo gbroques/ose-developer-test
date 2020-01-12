@@ -141,7 +141,7 @@ def create_pocketed_initials(document, tube, face):
 
     body = create_body(document, guiDocument, tube, face)
 
-    sketch = create_sketch(guiDocument, body, tube, face)
+    sketch = create_sketch(guiDocument, body, face)
 
     create_initials_in_sketch(sketch)
 
@@ -152,14 +152,14 @@ def create_body(document, guiDocument, tube, face):
     body_name = 'Body'
     body = document.addObject('PartDesign::Body', body_name)
     body.BaseFeature = tube
+    tube.ViewObject.Visibility = False
     guiDocument.ActiveView.setActiveObject('pdbody', body)
     FreeCADGui.Selection.clearSelection()
     FreeCADGui.Selection.addSelection(body.BaseFeature, face)
     return body
 
 
-def create_sketch(guiDocument, body, tube, face):
-    tube.ViewObject.Visibility = False
+def create_sketch(guiDocument, body, face):
     sketch_name = 'Sketch'
     sketch = body.newObject('Sketcher::SketchObject', sketch_name)
     sketch.Support = (body.BaseFeature, [face])
