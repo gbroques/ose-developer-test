@@ -4,7 +4,7 @@ OSE Developer Test Macro
 Requirements:
 * Import 8 hole tubing from OSE Part Library and build a cube
 * Fasten a bolt through one of the corners with a nut
-* Pocket initials into cube
+* Pocket initials into any face of any tube
 
 8 Hole Tubing Analysis
 ----------------------
