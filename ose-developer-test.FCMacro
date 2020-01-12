@@ -35,11 +35,11 @@ def main():
     tubing_filename = '8 hole tubing.fcstd'
     document = open_tubing(tubing_filename)
 
-    initial_eight_hole_tubing = document.Clone
-    dimensions = get_dimensions(document, initial_eight_hole_tubing)
+    initial_tube = document.Clone
+    dimensions = get_dimensions(document, initial_tube)
 
     base_tube_label = tubing_filename.split('.')[0]
-    tubes = clone_tubes_for_cube(initial_eight_hole_tubing, base_tube_label)
+    tubes = clone_tubes_for_cube(initial_tube, base_tube_label)
 
     arrange_tubes_into_cube(tubes, dimensions)
     create_bolt_and_nut_through_corner_of_cube()
