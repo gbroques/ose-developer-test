@@ -1,6 +1,11 @@
 # OSE Developer Test
 Programmatic solution to the [OSE Developer Test](https://wiki.opensourceecology.org/wiki/Developer_Test).
 
+* [Requirements](#requirements)
+* [Pre-Requisites](#pre-requisites)
+* [Usage](#usage)
+* [Dependencies](#dependencies)
+
 ## Requirements
 * Import 8 hole tubing from OSE Part Library and build a cube
 * Fasten a bolt through one of the corners with a nut
@@ -17,7 +22,7 @@ Download Tubing Library by running the following shell script:
 
 This should create a `Tubing Library` directory inside the `ose-developer-test` directory.
 
-## Import Macro into FreeCAD
+## Usage
 Import `ose-developer-test.FCMacro` into FreeCAD.
 
 ## Dependencies
