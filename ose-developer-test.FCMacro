@@ -228,31 +228,31 @@ def create_capital_r_in_right_side_of_sketch(sketch):
     sketch.addGeometry(ArcOfCircle(Circle(Vector(26.2, 9.4, 0), Vector(0, 0, 1), 10.2), -1.1, 1.3), False)
     sketch.addConstraint(Constraint('Coincident', 8, 2, 7, 2))
 
-    # Midline
+    # Midline connecting to bottom point of top right arc
     sketch.addGeometry(LineSegment(Vector(30.7, -0.3, 0), Vector(16.6, -0.6, 0)), False)
     sketch.addConstraint(Constraint('Coincident', 9, 1, 8, 1))
     sketch.addConstraint(Constraint('PointOnObject', 9, 2, -1))
     sketch.addConstraint(Constraint('Horizontal', 9))
 
-    # Outer slanted line of right leg connecting to midline
+    # Outer vertical slanted line of right leg connecting to left point of midline
     sketch.addGeometry(LineSegment(Vector(16.6, 0, 0), Vector(32.2, -20.7, 0)), False)
     sketch.addConstraint(Constraint('Coincident', 10, 1, 9, 2))
 
-    # Bottom line of right leg
+    # Horizontal bottom line of right leg
     sketch.addGeometry(LineSegment(Vector(32.2, -20.7, 0), Vector(24, -20.7, 0)), False)
     sketch.addConstraint(Constraint('Coincident', 11, 1, 10, 2))
     sketch.addConstraint(Constraint('Horizontal', 11))
 
-    # Inner slanted line of right leg
+    # Inner vertical slanted line of right leg
     sketch.addGeometry(LineSegment(Vector(24, -20.7, 0), Vector(14.8, -6.8, 0)), False)
     sketch.addConstraint(Constraint('Coincident', 12, 1, 11, 2))
 
-    # Right side of left leg
+    # Vertical right side of left leg
     sketch.addGeometry(LineSegment(Vector(14.8, -6.8, 0), Vector(14.9, -20.4, 0)), False)
     sketch.addConstraint(Constraint('Coincident', 13, 1, 12, 2))
     sketch.addConstraint(Constraint('Vertical', 13))
 
-    # Bottom line of left leg connecting to left vertical line of R
+    # Horizontal bottom line of left leg connecting to left vertical line of R
     sketch.addGeometry(LineSegment(Vector(14.8, -20.4, 0), Vector(7.4, -20.4, 0)), False)
     sketch.addConstraint(Constraint('Coincident', 14, 1, 13, 2))
     sketch.addConstraint(Constraint('Coincident', 14, 2, 6, 1))
