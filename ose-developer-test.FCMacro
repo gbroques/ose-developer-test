@@ -141,7 +141,7 @@ def create_pocketed_initials(document, tube, face):
 
     body = create_body(document, guiDocument, tube, face)
 
-    sketch = create_sketch(document, guiDocument, body, tube, face)
+    sketch = create_sketch(guiDocument, body, tube, face)
 
     create_initials_in_sketch(sketch)
 
@@ -158,11 +158,11 @@ def create_body(document, guiDocument, tube, face):
     return body
 
 
-def create_sketch(document, guiDocument, body, tube, face):
+def create_sketch(guiDocument, body, tube, face):
     tube.ViewObject.Visibility = False
     sketch_name = 'Sketch'
     sketch = body.newObject('Sketcher::SketchObject', sketch_name)
-    sketch.Support = (document.BaseFeature, [face])
+    sketch.Support = (body.BaseFeature, [face])
     sketch.MapMode = 'FlatFace'
     guiDocument.setEdit(sketch_name)
     return sketch
