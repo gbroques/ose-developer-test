@@ -174,33 +174,39 @@ def create_initials_in_sketch(sketch):
 
 
 def create_g_initial_in_sketch(sketch):
+    center_x = -24.5
+    center = Vector(center_x, 0, 0)
+
+    bottom_midline_y = -4.3
+    bottom_midline = Vector(center_x, bottom_midline_y, 0)
+
     # Outer arc of G
-    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(Vector(-24.5, 0, 0), Vector(0, 0, 1), 20.7), 0.75, 6), False)
+    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(center, Vector(0, 0, 1), 20.7), 0.75, 6), False)
     sketch.addConstraint(Sketcher.Constraint('PointOnObject', 0, 3, -1))
     sketch.addConstraint(Sketcher.Constraint('PointOnObject', 0, 2, -1))
 
     # Horizontal mid-line of G
-    sketch.addGeometry(Part.LineSegment(Vector(-3.9, 0, 0), Vector(-24.5, 0, 0)), False)
+    sketch.addGeometry(Part.LineSegment(Vector(-3.9, 0, 0), center), False)
     sketch.addConstraint(Sketcher.Constraint('Coincident', 1, 1, 0, 2))
 
     # Inner arc of G
-    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(Vector(-24.5, 0, 0), Vector(0, 0, 1), 15.5), 0.75, 6), False)
+    sketch.addGeometry(Part.ArcOfCircle(Part.Circle(center, Vector(0, 0, 1), 15.5), 0.75, 6), False)
     sketch.addConstraint(Sketcher.Constraint('Coincident', 2, 3, 1, 2))
 
     # Lower horizontal mid-line of G
-    sketch.addGeometry(Part.LineSegment(Vector(-9.6, -4.3, 0), Vector(-24.5, -4.3, 0)), False)
+    sketch.addGeometry(Part.LineSegment(Vector(-9.5, bottom_midline_y, 0), bottom_midline), False)
     sketch.addConstraint(Sketcher.Constraint('Coincident', 3, 1, 2, 2))
     sketch.addConstraint(Sketcher.Constraint('Horizontal', 3))
 
     # Connecting line between two horizontal mid-lines
-    sketch.addGeometry(Part.LineSegment(Vector(-24.5, 0, 0), Vector(-24.5, -4.3, 0)), False)
+    sketch.addGeometry(Part.LineSegment(center, bottom_midline), False)
     sketch.addConstraint(Sketcher.Constraint('Coincident', 4, 1, 0, 3))
     sketch.addConstraint(Sketcher.Constraint('Coincident', 4, 2, 3, 2))
     sketch.addConstraint(Sketcher.Constraint('Coincident', 0, 3, 1, 2))
     sketch.addConstraint(Sketcher.Constraint('Vertical', 4))
 
     # Connecting line between outer and inner arcs
-    sketch.addGeometry(Part.LineSegment(Vector(-9.4, 13.8, 0), Vector(-13.8, 11.2, 0)), False)
+    sketch.addGeometry(Part.LineSegment(Vector(-9.5, 13.8, 0), Vector(-13.8, 11.2, 0)), False)
     sketch.addConstraint(Sketcher.Constraint('Coincident', 5, 1, 0, 1))
     sketch.addConstraint(Sketcher.Constraint('Coincident', 5, 2, 2, 1))
 
