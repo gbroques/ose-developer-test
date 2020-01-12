@@ -95,21 +95,31 @@ def arrange_tubes_into_cube(tubes, dimensions):
     side, height = dimensions
     half_side = side / 2
 
-    # TODO: Break function up into sub-functions: arrange_base, arrange_walls, and arrange_top
+    # Bottom layer of base
     tubes[0].Placement = Placement(Vector(-half_side, side, half_side), Rotation(Vector(0, 1, 0), 90))
-    tubes[1].Placement = Placement(Vector((height - side), 0, 0), Rotation(Vector(0, 0, 1), 0))
-    tubes[2].Placement = Placement(Vector(side, -half_side, (side + half_side)), Rotation(Vector(1, 0, 0), -90))
-    tubes[3].Placement = Placement(Vector(0, (height - side), 0), Rotation(Vector(0, 0, 1), 0))
     tubes[4].Placement = Placement(Vector(-half_side, (height - side * 2), half_side), Rotation(Vector(0, 1, 0), 90))
-    tubes[5].Placement = Placement(Vector((height - side), (height - side), 0), Rotation(Vector(0, 0, 1), 0))
+
+    # Top layer of base
+    tubes[2].Placement = Placement(Vector(side, -half_side, (side + half_side)), Rotation(Vector(1, 0, 0), -90))
     tubes[6].Placement = Placement(Vector((height - side * 2), -half_side, (side + half_side)), Rotation(Vector(-1, 0, 0), 90))
+
+    # Move 3 clones for pillars
+    # The last tube (#12) isn't moved and acts as the fourth pillar
+    tubes[1].Placement = Placement(Vector((height - side), 0, 0), Rotation(Vector(0, 0, 1), 0))
+    tubes[3].Placement = Placement(Vector(0, (height - side), 0), Rotation(Vector(0, 0, 1), 0))
+    tubes[5].Placement = Placement(Vector((height - side), (height - side), 0), Rotation(Vector(0, 0, 1), 0))
+
+    # Bottom layer of top
     tubes[7].Placement = Placement(Vector(side, -half_side, (height - side - half_side)), Rotation(Vector(-1, 0, 0), 90))
     tubes[8].Placement = Placement(Vector((height - side * 2), -half_side, (height - side - half_side)), Rotation(Vector(-1, 0, 0), 90))
+
+    # Top-most layer of top
     tubes[9].Placement = Placement(Vector(-half_side, side, height - half_side), Rotation(Vector(0, 1, 0), 90))
     tubes[10].Placement = Placement(Vector(-half_side, (height - side * 2), height - half_side), Rotation(Vector(0, 1, 0), 90))
 
 
 def create_bolt_and_nut_through_corner_of_cube():
+    # TODO: Programmatically determine placement of bolt and nut instead of hard-coding
     sm = ScrewMaker.Instance()
     bolt = sm.createFastener('ISO4014', 'M30', '220', 'simple')
     # Place bolt through holes of 8 hole tubing 10 & 12 in corner of cube
