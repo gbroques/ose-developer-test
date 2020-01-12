@@ -42,7 +42,7 @@ def main():
     tubes = clone_tubes_for_cube(initial_eight_hole_tubing, base_tube_label)
 
     arrange_tubes_into_cube(tubes, dimensions)
-    create_screw_and_nut_through_corner_of_cube()
+    create_bolt_and_nut_through_corner_of_cube()
     create_pocketed_initials(document)
 
 
@@ -109,15 +109,15 @@ def arrange_tubes_into_cube(tubes, dimensions):
     tubes[10].Placement = Placement(Vector(-half_side, (height - side * 2), height - half_side), Rotation(Vector(0, 1, 0), 90))
 
 
-def create_screw_and_nut_through_corner_of_cube():
+def create_bolt_and_nut_through_corner_of_cube():
     sm = ScrewMaker.Instance()
-    screw = sm.createFastener('ISO4014', 'M30', '220', 'simple')
-    # Place screw through holes of 8 hole tubing 10 & 12 in corner of cube
-    screw.Placement = Placement(
+    bolt = sm.createFastener('ISO4014', 'M30', '220', 'simple')
+    # Place bolt through holes of 8 hole tubing 10 & 12 in corner of cube
+    bolt.Placement = Placement(
         Vector(0, 152.4, 762), Rotation(Vector(-1, 0, 0), 90))
 
     nut = sm.createFastener('ISO4032', '(M33)', 0, 'simple')
-    # Place nut on end of screw
+    # Place nut on end of bolt
     nut.Placement = Placement(
         Vector(0, -65.45, 762), Rotation(Vector(-1, 0, 0), 90))
 
