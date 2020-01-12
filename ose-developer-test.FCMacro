@@ -22,16 +22,19 @@ import os
 import Draft
 import FreeCAD
 import FreeCADGui
+import Part
 import ScrewMaker
+import Sketcher
+from FreeCAD import Placement, Rotation, Vector
 
 
 def main():
-    FreeCAD.newDocument()
-    open_eight_hole_tubing()
-    initial_eight_hole_tubing = App.ActiveDocument.ActiveObject
+    document = open_eight_hole_tubing()
+    initial_eight_hole_tubing = FreeCAD.ActiveDocument.ActiveObject
     tubes = clone_tubes_for_cube(initial_eight_hole_tubing)
     arrange_tubes_into_cube(tubes)
     create_screw_and_nut_through_corner_of_cube()
+    create_pocketed_initials(document)
 
 
 def open_eight_hole_tubing():
@@ -40,7 +43,7 @@ def open_eight_hole_tubing():
     """
     script_path = os.path.dirname(os.path.abspath(__file__))
     eight_hole_tubing_path = os.path.join(script_path, 'Tubing Library/8 hole tubing.fcstd')
-    FreeCAD.open(eight_hole_tubing_path)
+    return FreeCAD.open(eight_hole_tubing_path)
 
 
 def clone_tubes_for_cube(initial_tube):
@@ -65,31 +68,99 @@ def arrange_tubes_into_cube(tubes):
     side = 101.6
     height = 812.80
     half_side = 101.6 / 2
+
     # TODO: Break function up into sub-functions: arrange_base, arrange_walls, and arrange_top
-    tubes[0].Placement = App.Placement(App.Vector(-half_side, side, half_side), App.Rotation(App.Vector(0, 1, 0), 90))
-    tubes[1].Placement = App.Placement(App.Vector((height - side), 0, 0), App.Rotation(App.Vector(0, 0, 1), 0))
-    tubes[2].Placement = App.Placement(App.Vector(side, -half_side, (side + half_side)), App.Rotation(App.Vector(1, 0, 0), -90))
-    tubes[3].Placement = App.Placement(App.Vector(0, (height - side), 0), App.Rotation(App.Vector(0, 0, 1), 0))
-    tubes[4].Placement = App.Placement(App.Vector(-half_side, (height - side * 2), half_side), App.Rotation(App.Vector(0, 1, 0), 90))
-    tubes[5].Placement = App.Placement(App.Vector((height - side), (height - side), 0), App.Rotation(App.Vector(0, 0, 1), 0))
-    tubes[6].Placement = App.Placement(App.Vector((height - side * 2), -half_side, (side + half_side)), App.Rotation(App.Vector(-1, 0, 0), 90))
-    tubes[7].Placement = App.Placement(App.Vector(side, -half_side, (height - side - half_side)), App.Rotation(App.Vector(-1, 0, 0), 90))
-    tubes[8].Placement = App.Placement(App.Vector((height - side * 2), -half_side, (height - side - half_side)), App.Rotation(App.Vector(-1, 0, 0), 90))
-    tubes[9].Placement = App.Placement(App.Vector(-half_side, side, height - half_side), App.Rotation(App.Vector(0, 1, 0), 90))
-    tubes[10].Placement = App.Placement(App.Vector(-half_side, (height - side * 2), height - half_side), App.Rotation(App.Vector(0, 1, 0), 90))
+    tubes[0].Placement = Placement(Vector(-half_side, side, half_side), Rotation(Vector(0, 1, 0), 90))
+    tubes[1].Placement = Placement(Vector((height - side), 0, 0), Rotation(Vector(0, 0, 1), 0))
+    tubes[2].Placement = Placement(Vector(side, -half_side, (side + half_side)), Rotation(Vector(1, 0, 0), -90))
+    tubes[3].Placement = Placement(Vector(0, (height - side), 0), Rotation(Vector(0, 0, 1), 0))
+    tubes[4].Placement = Placement(Vector(-half_side, (height - side * 2), half_side), Rotation(Vector(0, 1, 0), 90))
+    tubes[5].Placement = Placement(Vector((height - side), (height - side), 0), Rotation(Vector(0, 0, 1), 0))
+    tubes[6].Placement = Placement(Vector((height - side * 2), -half_side, (side + half_side)), Rotation(Vector(-1, 0, 0), 90))
+    tubes[7].Placement = Placement(Vector(side, -half_side, (height - side - half_side)), Rotation(Vector(-1, 0, 0), 90))
+    tubes[8].Placement = Placement(Vector((height - side * 2), -half_side, (height - side - half_side)), Rotation(Vector(-1, 0, 0), 90))
+    tubes[9].Placement = Placement(Vector(-half_side, side, height - half_side), Rotation(Vector(0, 1, 0), 90))
+    tubes[10].Placement = Placement(Vector(-half_side, (height - side * 2), height - half_side), Rotation(Vector(0, 1, 0), 90))
 
 
 def create_screw_and_nut_through_corner_of_cube():
-    first_tube = App.ActiveDocument.getObjectsByLabel('8 hole tubing 1')[0]
-    FreeCADGui.Selection.addSelection(first_tube, 'Edge29')
     sm = ScrewMaker.Instance()
     screw = sm.createFastener('ISO4014', 'M30', '220', 'simple')
     # Place screw through holes of 8 hole tubing 10 & 12 in corner of cube
-    screw.Placement = App.Placement(App.Vector(0, 152.4, 762), App.Rotation(App.Vector(-1, 0, 0), 90))
+    screw.Placement = Placement(Vector(0, 152.4, 762), Rotation(Vector(-1, 0, 0), 90))
 
     nut = sm.createFastener('ISO4032', '(M33)', 0, 'simple')
     # Place nut on end of screw
-    nut.Placement = App.Placement(App.Vector(0, -65.45, 762), App.Rotation(App.Vector(-1, 0, 0), 90))
+    nut.Placement = Placement(Vector(0, -65.45, 762), Rotation(Vector(-1, 0, 0), 90))
+
+
+def create_pocketed_initials(document):
+    # Create body
+    document.addObject('PartDesign::Body', 'Body')
+    document.Body.BaseFeature = document.Clone011
+    FreeCADGui.activeView().setActiveObject('pdbody', document.Body)
+    FreeCADGui.Selection.clearSelection()
+    FreeCADGui.Selection.addSelection(document.BaseFeature, 'Face4')
+
+    # Create Sketch
+    FreeCADGui.ActiveDocument.Clone011.Visibility = False
+    document.Body.newObject('Sketcher::SketchObject', 'Sketch')
+    document.Sketch.Support = (document.BaseFeature, ["Face4"])
+    document.Sketch.MapMode = 'FlatFace'
+    FreeCADGui.activeDocument().setEdit('Sketch')
+
+    # Create rectangle in sketch
+    # --------------------------
+    # Coordinates
+    create_rectangle_in_sketch()
+
+    document.Body.newObject("PartDesign::Pocket", "Pocket")
+    document.Pocket.Profile = document.Sketch
+    document.Pocket.Length = 5.0
+    FreeCADGui.activeDocument().hide("Sketch")
+    FreeCADGui.ActiveDocument.Pocket.ShapeColor = FreeCADGui.ActiveDocument.Body.ShapeColor
+    FreeCADGui.ActiveDocument.Pocket.LineColor = FreeCADGui.ActiveDocument.Body.LineColor
+    FreeCADGui.ActiveDocument.Pocket.PointColor = FreeCADGui.ActiveDocument.Body.PointColor
+    FreeCADGui.ActiveDocument.Pocket.Transparency = FreeCADGui.ActiveDocument.Body.Transparency
+    FreeCADGui.ActiveDocument.Pocket.DisplayMode = FreeCADGui.ActiveDocument.Body.DisplayMode
+    FreeCADGui.activeDocument().setEdit('Pocket', 0)
+    FreeCADGui.Selection.clearSelection()
+
+    FreeCADGui.activeDocument().hide("Sketch")
+    document.Pocket.Length = 5.000000
+    document.Pocket.Length2 = 100.000000
+    document.Pocket.Type = 0
+    document.Pocket.UpToFace = None
+    document.Pocket.Reversed = 0
+    document.Pocket.Midplane = 0
+    document.Pocket.Offset = 0.000000
+    FreeCADGui.activeDocument().hide("BaseFeature")
+    FreeCADGui.activeDocument().resetEdit()
+
+
+def create_rectangle_in_sketch():
+    geoList = []
+    geoList.append(Part.LineSegment(
+        Vector(-25.636232, 29.372629, 0), Vector(25.640457, 29.372629, 0)))
+    geoList.append(Part.LineSegment(
+        Vector(25.640457, 29.372629, 0), Vector(25.640457, -28.057238, 0)))
+    geoList.append(Part.LineSegment(
+        Vector(25.640457, -28.057238, 0), Vector(-25.636232, -28.057238, 0)))
+    geoList.append(Part.LineSegment(
+        Vector(-25.636232, -28.057238, 0), Vector(-25.636232, 29.372629, 0)))
+    FreeCAD.ActiveDocument.Sketch.addGeometry(geoList, False)
+
+    # Constraints
+    conList = []
+    conList.append(Sketcher.Constraint('Coincident', 0, 2, 1, 1))
+    conList.append(Sketcher.Constraint('Coincident', 1, 2, 2, 1))
+    conList.append(Sketcher.Constraint('Coincident', 2, 2, 3, 1))
+    conList.append(Sketcher.Constraint('Coincident', 3, 2, 0, 1))
+    conList.append(Sketcher.Constraint('Horizontal', 0))
+    conList.append(Sketcher.Constraint('Horizontal', 2))
+    conList.append(Sketcher.Constraint('Vertical', 1))
+    conList.append(Sketcher.Constraint('Vertical', 3))
+    FreeCAD.ActiveDocument.Sketch.addConstraint(conList)
 
 
 if __name__ == "__main__":
