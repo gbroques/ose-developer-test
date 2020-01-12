@@ -109,10 +109,7 @@ def create_pocketed_initials(document):
     document.Sketch.MapMode = 'FlatFace'
     FreeCADGui.activeDocument().setEdit('Sketch')
 
-    # Create rectangle in sketch
-    # --------------------------
-    # Coordinates
-    create_rectangle_in_sketch()
+    create_initials_in_sketch(document)
 
     document.Body.newObject("PartDesign::Pocket", "Pocket")
     document.Pocket.Profile = document.Sketch
@@ -138,29 +135,41 @@ def create_pocketed_initials(document):
     FreeCADGui.activeDocument().resetEdit()
 
 
-def create_rectangle_in_sketch():
-    geoList = []
-    geoList.append(Part.LineSegment(
-        Vector(-25.636232, 29.372629, 0), Vector(25.640457, 29.372629, 0)))
-    geoList.append(Part.LineSegment(
-        Vector(25.640457, 29.372629, 0), Vector(25.640457, -28.057238, 0)))
-    geoList.append(Part.LineSegment(
-        Vector(25.640457, -28.057238, 0), Vector(-25.636232, -28.057238, 0)))
-    geoList.append(Part.LineSegment(
-        Vector(-25.636232, -28.057238, 0), Vector(-25.636232, 29.372629, 0)))
-    FreeCAD.ActiveDocument.Sketch.addGeometry(geoList, False)
+def create_initials_in_sketch(document):
+    create_g_initial_in_sketch(document)
+    # TODO: create_r_initial_in_sketch
 
-    # Constraints
-    conList = []
-    conList.append(Sketcher.Constraint('Coincident', 0, 2, 1, 1))
-    conList.append(Sketcher.Constraint('Coincident', 1, 2, 2, 1))
-    conList.append(Sketcher.Constraint('Coincident', 2, 2, 3, 1))
-    conList.append(Sketcher.Constraint('Coincident', 3, 2, 0, 1))
-    conList.append(Sketcher.Constraint('Horizontal', 0))
-    conList.append(Sketcher.Constraint('Horizontal', 2))
-    conList.append(Sketcher.Constraint('Vertical', 1))
-    conList.append(Sketcher.Constraint('Vertical', 3))
-    FreeCAD.ActiveDocument.Sketch.addConstraint(conList)
+
+def create_g_initial_in_sketch(document):
+    # Outer arc of G
+    document.Sketch.addGeometry(Part.ArcOfCircle(Part.Circle(Vector(-24.5, 0, 0), Vector(0, 0, 1), 20.7), 0.75, 6), False)
+    document.Sketch.addConstraint(Sketcher.Constraint('PointOnObject', 0, 3, -1))
+    document.Sketch.addConstraint(Sketcher.Constraint('PointOnObject', 0, 2, -1))
+
+    # Horizontal mid-line of G
+    document.Sketch.addGeometry(Part.LineSegment(Vector(-3.9, 0, 0), Vector(-24.5, 0, 0)), False)
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 1, 1, 0, 2))
+
+    # Inner arc of G
+    document.Sketch.addGeometry(Part.ArcOfCircle(Part.Circle(Vector(-24.5, 0, 0), Vector(0, 0, 1), 15.5), 0.75, 6), False)
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 2, 3, 1, 2))
+
+    # Lower horizontal mid-line of G
+    document.Sketch.addGeometry(Part.LineSegment(Vector(-9.6, -4.3, 0), Vector(-24.5, -4.3, 0)), False)
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 3, 1, 2, 2))
+    document.Sketch.addConstraint(Sketcher.Constraint('Horizontal', 3))
+
+    # Connecting line between two horizontal mid-lines
+    document.Sketch.addGeometry(Part.LineSegment(Vector(-24.5, 0, 0), Vector(-24.5, -4.3, 0)), False)
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 4, 1, 0, 3))
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 4, 2, 3, 2))
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 0, 3, 1, 2))
+    document.Sketch.addConstraint(Sketcher.Constraint('Vertical', 4))
+
+    # Connecting line between outer and inner arcs
+    document.Sketch.addGeometry(Part.LineSegment(Vector(-9.4, 13.8, 0), Vector(-13.8, 11.2, 0)), False)
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 5, 1, 0, 1))
+    document.Sketch.addConstraint(Sketcher.Constraint('Coincident', 5, 2, 2, 1))
 
 
 if __name__ == "__main__":
