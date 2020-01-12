@@ -133,9 +133,10 @@ def create_bolt_and_nut_through_corner_of_cube():
 
 
 def create_pocketed_initials(document):
-    body = create_body(document)
-
     guiDocument = FreeCADGui.ActiveDocument
+
+    body = create_body(document, guiDocument)
+
     sketch = create_sketch(document, guiDocument, body)
 
     create_initials_in_sketch(sketch)
@@ -143,7 +144,7 @@ def create_pocketed_initials(document):
     create_pocket(document, guiDocument, body)
 
 
-def create_body(document):
+def create_body(document, guiDocument):
     """
     TODO: Both create_body and create_sketch use Clone011 and Face4
           These should be parameterized or extracted somehow
@@ -152,7 +153,7 @@ def create_body(document):
     document.addObject('PartDesign::Body', body_name)
     body = document.getObject(body_name)
     document.Body.BaseFeature = document.Clone011
-    FreeCADGui.activeView().setActiveObject('pdbody', body)
+    guiDocument.ActiveView.setActiveObject('pdbody', body)
     FreeCADGui.Selection.clearSelection()
     FreeCADGui.Selection.addSelection(document.BaseFeature, 'Face4')
     return body
