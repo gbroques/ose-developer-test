@@ -6,6 +6,8 @@ Programmatic solution to the [OSE Developer Test](https://wiki.opensourceecology
 * Fasten a bolt through one of the corners with a nut
 * Pocket initials into any face of any tube
 
+![OSE Developer Test](ose-developer-test.png)
+
 ## Pre-Requisites
 Download Tubing Library by running the following shell script:
 
