@@ -247,25 +247,27 @@ def create_pocket(document, guiDocument, body):
     pocket = document.getObject(pocket_name)
     pocket.Profile = document.Sketch
     pocket.Length = 5.0
+    pocket.Length2 = 100.0
+    pocket.Type = 0
+    pocket.UpToFace = None
+    pocket.Reversed = 0
+    pocket.Midplane = 0
+    pocket.Offset = 0.0
 
     guiDocument.hide('Sketch')
-    
-    guiDocument.Pocket.ShapeColor = guiDocument.Body.ShapeColor
-    guiDocument.Pocket.LineColor = guiDocument.Body.LineColor
-    guiDocument.Pocket.PointColor = guiDocument.Body.PointColor
-    guiDocument.Pocket.Transparency = guiDocument.Body.Transparency
-    guiDocument.Pocket.DisplayMode = guiDocument.Body.DisplayMode
-    guiDocument.setEdit('Pocket', 0)
+
+    pocket_view = pocket.ViewObject
+    body_view = body.ViewObject
+    pocket_view.ShapeColor = body_view.ShapeColor
+    pocket_view.LineColor = body_view.LineColor
+    pocket_view.PointColor = body_view.PointColor
+    pocket_view.Transparency = body_view.Transparency
+    pocket_view.DisplayMode = body_view.DisplayMode
+
+    guiDocument.setEdit(pocket_name, 0)
     FreeCADGui.Selection.clearSelection()
 
     guiDocument.hide('Sketch')
-    document.Pocket.Length = 5.000000
-    document.Pocket.Length2 = 100.000000
-    document.Pocket.Type = 0
-    document.Pocket.UpToFace = None
-    document.Pocket.Reversed = 0
-    document.Pocket.Midplane = 0
-    document.Pocket.Offset = 0.000000
     guiDocument.hide('BaseFeature')
     guiDocument.resetEdit()
 
