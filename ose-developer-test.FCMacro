@@ -1,6 +1,13 @@
 """
 OSE Developer Test Macro
 
+Requirements:
+* Import 8 hole tubing from OSE Part Library and build a cube
+* Fasten a bolt through one of the corners with a nut
+* Pocket initials into cube
+
+8 Hole Tubing Analysis
+----------------------
   +---+
  /   /|
 +---+ |
@@ -11,11 +18,7 @@ OSE Developer Test Macro
 +---+
   S
 
-Dimensions of 8 hole tubing:
-    Side: 101.60
-    Height: 812.80
-
-Width and length are equal making the 8 hole tubing a square prism.
+Width and length are equal making the tubing a square prism.
 """
 import os
 
@@ -30,9 +33,10 @@ from FreeCAD import Placement, Rotation, Vector
 
 def main():
     document = open_tubing('8 hole tubing.fcstd')
-    initial_eight_hole_tubing = document.ActiveObject
+    initial_eight_hole_tubing = document.Clone
+    dimensions = get_dimensions(document, initial_eight_hole_tubing)
     tubes = clone_tubes_for_cube(initial_eight_hole_tubing)
-    arrange_tubes_into_cube(tubes)
+    arrange_tubes_into_cube(tubes, dimensions)
     create_screw_and_nut_through_corner_of_cube()
     create_pocketed_initials(document)
 
@@ -44,6 +48,24 @@ def open_tubing(filename):
     script_path = os.path.dirname(os.path.abspath(__file__))
     tubing_path = os.path.join(script_path, 'Tubing Library', filename)
     return FreeCAD.open(tubing_path)
+
+
+def get_dimensions(document, tubing):
+    edges = tubing.Shape.Edges
+
+    bottom_horizontal_edge = edges[1]
+    p1, p2 = bottom_horizontal_edge.Vertexes
+    bottom_horizontal_dimension = Draft.makeDimension(p1.Point, p2.Point)
+    side = bottom_horizontal_dimension.Distance.Value
+    document.removeObject('Dimension')
+
+    vertical_side_edge = edges[0]
+    p3, p4 = vertical_side_edge.Vertexes
+    vertical_side_dimension = Draft.makeDimension(p3.Point, p4.Point)
+    height = vertical_side_dimension.Distance.Value
+    document.removeObject('Dimension')
+
+    return side, height
 
 
 def clone_tubes_for_cube(initial_tube):
@@ -61,14 +83,12 @@ def clone_tubes_for_cube(initial_tube):
     return tubes
 
 
-def arrange_tubes_into_cube(tubes):
+def arrange_tubes_into_cube(tubes, dimensions):
     """
-    Arranges a list of tubes into a cube based on tube dimension.
+    Arranges a list of tubes into a cube based on tube dimensions.
     """
-    # TODO: Find a way to programmatically determine these dimensions rather than hard-coding
-    side = 101.6
-    height = 812.80
-    half_side = 101.6 / 2
+    side, height = dimensions
+    half_side = side / 2
 
     # TODO: Break function up into sub-functions: arrange_base, arrange_walls, and arrange_top
     tubes[0].Placement = Placement(Vector(-half_side, side, half_side), Rotation(Vector(0, 1, 0), 90))
