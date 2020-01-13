@@ -36,16 +36,14 @@ def main():
     document = open_tubing(tubing_filename)
 
     initial_tube = document.Clone
-    dimensions = get_dimensions(document, initial_tube)
-
     base_tube_label = tubing_filename.split('.')[0]
     tubes = clone_tubes_for_cube(initial_tube, base_tube_label)
 
-    arrange_tubes_into_cube(tubes, dimensions)
+    arrange_tubes_into_cube(document, tubes)
+
     create_bolt_and_nut_through_corner_of_cube()
 
-    last_tube = tubes[-1]
-    create_pocketed_initials(document, last_tube, 'Face4')
+    create_pocketed_initials(document, tubes[-1], 'Face4')
 
 
 def open_tubing(filename):
@@ -92,11 +90,15 @@ def clone_tubes_for_cube(initial_tube, base_label):
     return tubes
 
 
-def arrange_tubes_into_cube(tubes, dimensions):
+def arrange_tubes_into_cube(document, tubes):
     """
-    Arranges a list of tubes into a cube based on tube dimensions.
+    Arrange list of 12 tubes into a cube based on dimensions of first tube.
+
+    Assumes all tubes are clones of each other and have the same dimensions.
     """
-    side, height = dimensions
+    if len(tubes) != 12:
+        raise ValueError('Must have 12 tubes to arrange into cube')
+    side, height = get_dimensions(document, tubes[0])
     half_side = side / 2
 
     # Bottom layer of base
