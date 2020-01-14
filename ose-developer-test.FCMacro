@@ -41,9 +41,10 @@ def main():
 
     arrange_tubes_into_cube(document, tubes)
 
-    create_bolt_and_nut_through_corner_of_cube()
+    last_tube = tubes[-1]
+    create_bolt_and_nut_through_corner_of_cube(last_tube)
 
-    create_pocketed_initials(document, tubes[-1], 'Face4')
+    create_pocketed_initials(document, last_tube, 'Face4')
 
 
 def open_tubing(filename):
@@ -124,20 +125,49 @@ def arrange_tubes_into_cube(document, tubes):
     tubes[10].Placement = Placement(Vector(-half_side, (height - side * 2), height - half_side), Rotation(Vector(0, 1, 0), 90))
 
 
-def create_bolt_and_nut_through_corner_of_cube():
-    # TODO: Programmatically determine placement of bolt and nut instead of hard-coding
-    #       Ideally the fasteners workbench does this for us.
-    #       See https://github.com/shaise/FreeCAD_FastenersWB/issues/53
-    sm = ScrewMaker.Instance()
-    bolt = sm.createFastener('ISO4014', 'M30', '220', 'simple')
-    # Place bolt through holes of 8 hole tubing 10 & 12 in corner of cube
-    bolt.Placement = Placement(
-        Vector(0, 152.4, 762), Rotation(Vector(-1, 0, 0), 90))
+def create_bolt_and_nut_through_corner_of_cube(tube):
+    # TODO: Don't hardcode Face of tube
+    face_edges = tube.Shape.Faces[13].Edges
 
+    # Find top hole in face of tube
+    holes = list(filter(is_edge_circular, face_edges))
+    holes_by_z_descending = sorted(holes, key=get_z_of_hole, reverse=True)
+    top_hole = holes_by_z_descending[0]
+
+    # Find top hole edge index in tube edges
+    edges = tube.Shape.Edges
+    edge_index = [i for i, e in enumerate(edges) if e.isSame(top_hole)][0]
+
+    # Select top hole
+    FreeCADGui.Selection.addSelection(tube, 'Edge{}'.format(edge_index + 1))
+
+    # Simulate clicking ISO 4014 Hex head bolt button in GUI
+    FreeCADGui.runCommand('FSISO4014')
+
+    # Invert and set length of bolt
+    bolt = FreeCAD.ActiveDocument.Screw
+    # TODO: Don't hardcode length
+    bolt.length = '220'
+    bolt.invert = True
+    FreeCAD.ActiveDocument.recompute()
+
+    # Create nut
+    sm = ScrewMaker.Instance()
     nut = sm.createFastener('ISO4032', '(M33)', 0, 'simple')
-    # Place nut on end of bolt
-    nut.Placement = Placement(
-        Vector(0, -65.45, 762), Rotation(Vector(-1, 0, 0), 90))
+    # TODO: Don't hard-code bottom edge of bolt
+    bottom_bolt_edge = bolt.Shape.Edges[40]
+    inverted = True
+    offset = 1
+    move_to_object = ScrewMaker.FastenerBase.FSMoveToObject
+    move_to_object(nut, bottom_bolt_edge, not inverted, offset)
+
+
+def is_edge_circular(edge):
+    return isinstance(edge.Curve, Circle)
+
+
+def get_z_of_hole(hole):
+    return hole.Vertexes[0].Z
 
 
 def create_pocketed_initials(document, tube, face):
@@ -161,8 +191,6 @@ def create_body(document, guiDocument, tube, face):
     body.BaseFeature = tube
     tube.ViewObject.Visibility = False
     guiDocument.ActiveView.setActiveObject('pdbody', body)
-    FreeCADGui.Selection.clearSelection()
-    FreeCADGui.Selection.addSelection(body.BaseFeature, face)
     return body
 
 
@@ -306,7 +334,6 @@ def create_pocket(document, guiDocument, body, sketch):
     pocket_view.DisplayMode = body_view.DisplayMode
 
     guiDocument.setEdit(pocket_name, 0)
-    FreeCADGui.Selection.clearSelection()
 
     guiDocument.hide(sketch.Name)
     guiDocument.hide('BaseFeature')
