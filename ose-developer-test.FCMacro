@@ -142,6 +142,7 @@ def create_bolt_and_nut_through_corner_of_cube(tube):
     FreeCADGui.Selection.addSelection(tube, 'Edge{}'.format(edge_index + 1))
 
     # Simulate clicking ISO 4014 Hex head bolt button in GUI
+    # Fasteners workbench must be loaded in GUI first for this to work
     FreeCADGui.runCommand('FSISO4014')
 
     # Invert and set length of bolt
